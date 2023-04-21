@@ -9,6 +9,7 @@ library(leaflet)
 
 m <- leaflet() %>% setView(lng = -0.887712, lat = 41.649693, zoom = 7)
 
+#This is for the popups for each team
 realMadrid <- paste(sep = "<br/>",
 "<b> Real Madrid </b>",
 "35",
@@ -32,14 +33,23 @@ valencia <- paste(sep = "<br/>",
 )
 
 m %>% addTiles() %>% 
+#Each team's circle is added, with the appropriate labelling, color, coordinates and size
 addCircleMarkers(data = df, lat = 40.416775, lng = -3.703790, radius = 35) %>%
+
 addCircleMarkers(data = df, lat = 41.390205, lng = 2.154007, radius = 26) %>%
+
 addCircleMarkers(data = df, lat = 40.416775, lng = -3.703790, radius = 11) %>%
+
 addCircleMarkers(data = df, lat = 43.263012, lng = -2.934985, radius = 8) %>%
+
 addCircleMarkers(data = df, lat = 39.466667, lng = -0.375000, radius = 6) %>%
+#We implement the popups to the specific location
 addPopups(lat = 40.416775, lng = -3.703790, realMadrid, options = popupOptions(closeButton = FALSE)) %>%
+
 addPopups(lat = 41.390205, lng = 2.154007, barcelona, options = popupOptions(closeButton = FALSE)) %>%
+
 addPopups(lat = 43.263013, lng = -2.934985, bilbao, options = popupOptions(closeButton = FALSE)) %>%
+
 addPopups(lat = 39.466667, lng = -0.375000, valencia, options = popupOptions(closeButton = FALSE))
 
 
