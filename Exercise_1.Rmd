@@ -1,0 +1,46 @@
+---
+title: "Untitled"
+author: "Karl Myers"
+date: "2023-04-21"
+output: html_document
+---
+
+library(leaflet)
+
+m <- leaflet() %>% setView(lng = -0.887712, lat = 41.649693, zoom = 7)
+
+realMadrid <- paste(sep = "<br/>",
+"<b> Real Madrid </b>",
+"35",
+"<b> Atletico Madrid </b>",
+"11"
+)
+
+barcelona <- paste(sep  = "<br/>",
+"<b> FC Barcelona </b>",
+"26"
+)
+
+bilbao <- paste(sep = "<br/>",
+"<b> Athletic Bilbao </b>",
+"8"
+)
+
+valencia <- paste(sep = "<br/>",
+"<b> Valencia </b>",
+"6"
+)
+
+m %>% addTiles() %>% 
+addCircleMarkers(data = df, lat = 40.416775, lng = -3.703790, radius = 35) %>%
+addCircleMarkers(data = df, lat = 41.390205, lng = 2.154007, radius = 26) %>%
+addCircleMarkers(data = df, lat = 40.416775, lng = -3.703790, radius = 11) %>%
+addCircleMarkers(data = df, lat = 43.263012, lng = -2.934985, radius = 8) %>%
+addCircleMarkers(data = df, lat = 39.466667, lng = -0.375000, radius = 6) %>%
+addPopups(lat = 40.416775, lng = -3.703790, realMadrid, options = popupOptions(closeButton = FALSE)) %>%
+addPopups(lat = 41.390205, lng = 2.154007, barcelona, options = popupOptions(closeButton = FALSE)) %>%
+addPopups(lat = 43.263013, lng = -2.934985, bilbao, options = popupOptions(closeButton = FALSE)) %>%
+addPopups(lat = 39.466667, lng = -0.375000, valencia, options = popupOptions(closeButton = FALSE))
+
+
+
