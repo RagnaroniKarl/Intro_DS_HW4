@@ -1,0 +1,44 @@
+---
+title: "Exercise 2"
+author: "Hugo"
+date: "2023-04-23"
+output: html_document
+---
+
+```{r}
+find_pi <- function(B = 5000, seed = 10, make_plot = TRUE) {
+  # Control seed
+  set.seed(seed)
+  
+  # Simulate B points
+  point <- matrix(runif(2*B, -1, 1), B, 2)
+  
+  # Check if points are inside the circle
+  inside <- rowSums(point^2) <= 1
+  
+  # Compute area of circle
+  area_circle <- 4 * sum(inside) / B
+  
+  # Plot if desired
+  if (make_plot) {
+    plot(point[inside, 1], point[inside, 2], col = "blue", pch = 16, cex = 0.5,
+         xlim = c(-1.1, 1.1), ylim = c(-1.1, 1.1), xlab = "", ylab = "")
+    points(point[!inside, 1], point[!inside, 2], col = "red", pch = 16, cex = 0.5)
+    draw_circle <- function(center = c(0, 0), radius = 1) {
+      theta <- seq(0, 2*pi, length.out = 100)
+      lines(center[1] + radius * cos(theta), center[2] + radius * sin(theta), lwd = 2)
+    }
+    draw_circle(radius = 1)
+    rect(-1, -1, 1, 1, lwd = 2)
+  }
+  
+  # Return estimate of pi
+  return(area_circle)
+}
+
+# Estimate pi with default arguments and plot
+find_pi()
+
+# Estimate pi with larger B and don't plot
+find_pi(B = 100000, make_plot = FALSE)
+```
