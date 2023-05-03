@@ -7,45 +7,38 @@ date: "`r Sys.Date()`"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
-#load package 
-
-pckg <- c ('ggplot2','ggforce')
-
-library('ggforce')
-
-#load several packages at once
-lapply(pckg, require, character.only = TRUE)
-
-
-gg_circles <- function(){
+get_position <- function(d1, d2, d3) {
+  x <- c(-300, 300, 0)
+  y <- c(300, 300, -300)
+  d <- c(d1, d2, d3)
   
-  # construction of the plot
-  ggplot() + geom_circle(aes(x0 = 0, y0 = 0, r =200 ), fill = "grey", color = "grey", border = "black") +
-    geom_circle(aes(x0 = -300, y0 = 300, r = 20), fill = "red", color = "red", border = "black") +
-    geom_circle(aes(x0 = 0, y0 = -300, r = 20), fill = "blue", color = "blue", border = "black") +
-    geom_circle(aes(x0 = 300, y0 = 300, r = 20), fill = "green", color = "green", border = "black") +
-    geom_text(aes(x=100,y=-300,label ='Satellite 2'))+
-    geom_text(aes(x=-210,y=300,label ='Satellite 1'))+
-    geom_text(aes(x=210,y=300,label ='Satellite 3'))+
-    geom_text(aes(x=-190,y=-200,label ='Flat Earth'))+
-    # define graph boarders
-    coord_cartesian(xlim = c(-350, 350), ylim = c(-350, 350)) +
-    # name axis
-    xlab("x") + ylab("y")
+  f <- numeric(3) # function definie hors loop
+  for (i in 1:3) {
+    x0 <- x[i] - d[i] # algèbre fail 
+    y0 <- y[i] - d[i] # algèbre fail
+    f[i] <- (x[i] - x0)^2 + (y[i] - y0)^2 - d[i]^2 # algèbre fail 
+  }
+  
+  # Plot function 
+  plot1<- ggplot() +
+    geom_circle(aes(x0 = 0, y0 = 0, r = 200), fill = "grey", color = "grey") +
+    geom_point(aes(x =x, y = y), shape = 23, color = "orange") +
+    geom_circle(aes(x0 = -300, y0 = 300, r = 20), fill = "red", color = "red") +
+    geom_circle(aes(x0 = 0, y0 = -300, r = 20), fill = "blue", color = "blue") +
+    geom_circle(aes(x0 = 300, y0 = 300, r = 20), fill = "green", color = "green") +
+    geom_text(aes(x = -250, y = 300, label ='Satellite 1')) +
+    geom_text(aes(x = 300, y = 300, label ='Satellite 3')) +
+    geom_text(aes(x = 10, y = -300, label ='Satellite 2')) +
+    geom_text(aes(x = -190, y = -200, label ='Flat Earth')) +
+    coord_cartesian(xlim = c(-400, 400), ylim = c(-400, 400)) +
+    xlab("x") + ylab("y") + ggtitle("Position Estimation") +
+    
+    # display inputs on graph
+    geom_text(aes(x = x[1], y = y[1] - 50, label = paste0("d1: ", round(d[1], 2))))+
+    geom_text(aes(x = x[2], y = y[2] + 50, label = paste0("d2: ", round(d[2], 2))))+ 
+    geom_text(aes(x = x[3], y = y[3] - 50, label = paste0("d3: ", round(d[3], 2))))
+  
+# Return summary and plot
+return(list(summary(f),plot1))
 }
-
-gg_circles()
-
-
-
-
-
-  # construction of the matrix
-
-  # construction of the function
-
+get_position(453.2136,288.8427,418.3106)
