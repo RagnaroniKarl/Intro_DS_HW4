@@ -25,10 +25,10 @@ lapply(pckg, require, character.only = TRUE)
 gg_circles <- function(){
   
   # construction of the plot
-  ggplot() + geom_circle(aes(x0 = 0, y0 = 0, r =200 ), fill = "grey", color = "grey") +
-    geom_circle(aes(x0 = -300, y0 = 300, r = 20), fill = "red", color = "red") +
-    geom_circle(aes(x0 = 0, y0 = -300, r = 20), fill = "blue", color = "blue") +
-    geom_circle(aes(x0 = 300, y0 = 300, r = 20), fill = "green", color = "green") +
+  ggplot() + geom_circle(aes(x0 = 0, y0 = 0, r =200 ), fill = "grey", color = "grey", border = "black") +
+    geom_circle(aes(x0 = -300, y0 = 300, r = 20), fill = "red", color = "red", border = "black") +
+    geom_circle(aes(x0 = 0, y0 = -300, r = 20), fill = "blue", color = "blue", border = "black") +
+    geom_circle(aes(x0 = 300, y0 = 300, r = 20), fill = "green", color = "green", border = "black") +
     geom_text(aes(x=100,y=-300,label ='Satellite 2'))+
     geom_text(aes(x=-210,y=300,label ='Satellite 1'))+
     geom_text(aes(x=210,y=300,label ='Satellite 3'))+
