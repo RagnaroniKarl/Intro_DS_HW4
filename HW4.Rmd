@@ -1,0 +1,147 @@
+---
+title: "HW4"
+author: "Hugo"
+date: "2023-05-03"
+output: html_document
+---
+
+# Exercise 1
+```{r}
+library(leaflet)
+
+m <- leaflet() %>% setView(lng = -0.887712, lat = 41.649693, zoom = 7)
+
+#This is for the popups for each team
+realMadrid <- paste(sep = "<br/>",
+"<b> Real Madrid </b>",
+"35",
+"<b> Atletico Madrid </b>",
+"11"
+)
+
+barcelona <- paste(sep  = "<br/>",
+"<b> FC Barcelona </b>",
+"26"
+)
+
+bilbao <- paste(sep = "<br/>",
+"<b> Athletic Bilbao </b>",
+"8"
+)
+
+valencia <- paste(sep = "<br/>",
+"<b> Valencia </b>",
+"6"
+)
+
+m %>% addTiles() %>% 
+#Each team's circle is added, with the appropriate labelling, color, coordinates and size
+addCircleMarkers(data = df, lat = 40.416775, lng = -3.703790, radius = 35) %>%
+
+addCircleMarkers(data = df, lat = 41.390205, lng = 2.154007, radius = 26) %>%
+
+addCircleMarkers(data = df, lat = 40.416775, lng = -3.703790, radius = 11) %>%
+
+addCircleMarkers(data = df, lat = 43.263012, lng = -2.934985, radius = 8) %>%
+
+addCircleMarkers(data = df, lat = 39.466667, lng = -0.375000, radius = 6) %>%
+#We implement the popups to the specific location
+addPopups(lat = 40.416775, lng = -3.703790, realMadrid, options = popupOptions(closeButton = FALSE)) %>%
+
+addPopups(lat = 41.390205, lng = 2.154007, barcelona, options = popupOptions(closeButton = FALSE)) %>%
+
+addPopups(lat = 43.263013, lng = -2.934985, bilbao, options = popupOptions(closeButton = FALSE)) %>%
+
+addPopups(lat = 39.466667, lng = -0.375000, valencia, options = popupOptions(closeButton = FALSE))
+```
+
+# Exercise 2
+```{r}
+find_pi <- function(B = 5000, seed = 10, make_plot = TRUE) {
+  # Control seed
+  set.seed(seed)
+  
+  # Simulate B points
+  point <- matrix(runif(2*B, -1, 1), B, 2)
+  
+  # Check if points are inside the circle
+  inside <- rowSums(point^2) <= 1
+  
+  # Compute area of circle
+  area_circle <- 4 * sum(inside) / B
+  
+  # Plot if desired
+  if (make_plot) {
+    plot(point[inside, 1], point[inside, 2], col = "cyan", pch = 16, cex = 0.5,
+         xlim = c(-1.1, 1.1), ylim = c(-1.1, 1.1), xlab = "", ylab = "")
+    points(point[!inside, 1], point[!inside, 2], col = "red", pch = 16, cex = 0.5)
+    draw_circle <- function(center = c(0, 0), radius = 1) {
+      theta <- seq(0, 2*pi, length.out = 100)
+      lines(center[1] + radius * cos(theta), center[2] + radius * sin(theta), lwd = 2)
+    }
+    draw_circle(radius = 1)
+    rect(-1, -1, 1, 1, lwd = 2)
+  }
+  
+  # Return estimate of pi
+  return(area_circle)
+}
+# Estimate pi with default arguments and plot
+find_pi()
+# Estimate pi with larger B and don't plot
+find_pi(B = 100000, make_plot = FALSE)
+```
+
+# Exercise 3
+```{r} 
+get_position <- function(d) {
+  
+  # Define the coordinates of the satellites
+  x <- c(-300, 300, 0)
+  y <- c(300, 300, -300)
+  
+  # Define the objective function for the least-square adjustment
+  obj_fun <- function(theta, d, x, y) {
+    x0 <- theta[1]
+    y0 <- theta[2]
+    epsilon <- theta[3]
+    (x - x0)^2 + (y - y0)^2 - (d - epsilon)^2
+  }
+  
+  # Perform the optimization using the objective function
+  result <- optim(c(0, 0, 0), obj_fun, d = d, x = x, y = y)
+  
+  # Extract the estimated parameters
+  x0 <- result$par[1]
+  y0 <- result$par[2]
+  epsilon <- result$par[3]
+  
+  # Create a list with the results
+  res <- list(x0 = x0, y0 = y0, epsilon = epsilon)
+  class(res) <- "GNSS"
+  res
+}
+GNSS <- function(x0, y0, epsilon) {
+  res <- list(x0 = x0, y0 = y0, epsilon = epsilon)
+  class(res) <- "GNSS"
+  res
+}
+
+plot.GNSS <- function(x, ...) {
+  x0 <- x$x0
+  y0 <- x$y0
+  plot(c(-500, 500), c(-500, 500), type = "n", xlab = "x", ylab = "y")
+  text(x0, y0, "Receiver", pos = 3)
+  text(-300, 300, "Satellite 1", pos = 3)
+  text(300, 300, "Satellite 2", pos = 3)
+  text(0, -300, "Satellite 3", pos = 3)
+  segments(x0, y0, -300, 300, lty = 2)
+  segments(x0, y0, 300, 300, lty = 2)
+  segments(x0, y0, 0, -300, lty = 2)
+  arrows(x0, y0, x0 + 100*cos(seq(0, 2*pi, length.out = 101)),
+         y0 + 100*sin(seq(0, 2*pi, length.out = 101)), length = 0.1, col = "gray")
+  legend("topleft", legend = "Error ellipse", lty = 1, bty = "n", col = "gray")
+  theta <- seq(0, 2*pi, length.out = 101)
+}
+```
+
