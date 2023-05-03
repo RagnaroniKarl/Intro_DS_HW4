@@ -1,6 +1,6 @@
 ---
 title: "HW4"
-author: "Hugo"
+author: "CHIKURU Nelson, FRANCISCO Hugo, Myers Karl"
 date: "2023-05-03"
 output: html_document
 ---
