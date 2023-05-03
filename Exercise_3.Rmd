@@ -39,3 +39,33 @@ gg_circles <- function(){
 
 gg_circles()
 ```
+```{r}
+satellite_pos <- matrix(c(-300, 300, 0, 300, 300, -300), ncol=2, byrow=TRUE)
+
+get_position <- function(d_est) {
+  
+  # Define the objective function to minimize
+  objective <- function(theta) {
+    sum((sqrt((satellite_pos[, 1] - theta[1])^2 + (satellite_pos[, 2] - theta[2])^2) - d_est + theta[3])^2)
+  }
+  
+  # Use optim function to minimize objective function
+  res <- optim(par = c(0, 0, 0), fn = objective, lower = c(-1000, -1000, -1000), upper = c(1000, 1000, 1000))
+  
+  # Define the gnss_position object
+  gnss_pos <- list()
+  gnss_pos$theta <- res$par
+  gnss_pos$d_true <- sqrt((satellite_pos[, 1] - gnss_pos$theta[1])^2 + (satellite_pos[, 2] - gnss_pos$theta[2])^2)
+  gnss_pos$epsilon <- d_est - gnss_pos$d_true
+  
+  class(gnss_pos) <- "gnss_position"
+  return(gnss_pos)
+}
+
+# Example usage
+d_est <- c(450, 450, 450)
+pos <- get_position(d_est)
+print(pos$theta)
+print(pos$d_true)
+print(pos$epsilon)
+```
